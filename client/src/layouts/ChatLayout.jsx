@@ -1,5 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
+import Footer from "../components/Footer";
 
 const ChatLayout = ({ children }) => {
   return (
@@ -8,16 +9,22 @@ const ChatLayout = ({ children }) => {
       {/* Sidebar */}
       <Sidebar />
 
+
       {/* Main Area */}
       <div className="flex-1 flex flex-col">
 
-        {/* Top Navbar */}
+        {/* Navbar */}
         <Navbar />
+
 
         {/* Page Content */}
         <main className="flex-1 overflow-hidden">
           {children}
         </main>
+
+
+        {/* Footer */}
+        <Footer />
 
       </div>
 
