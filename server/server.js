@@ -10,13 +10,16 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5001;
 
-await connectDB();  
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
 
 app.use(
   "/uploads",
   express.static("uploads")
 );
+
+
+await connectDB();
+
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
