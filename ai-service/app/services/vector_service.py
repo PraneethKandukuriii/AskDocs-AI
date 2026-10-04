@@ -14,23 +14,49 @@ collection = client.get_or_create_collection(
 )
 
 
-def store_chunks(chunks, filename):
+def store_chunks(chunks, page_numbers, filename, user_id, conversation_id, document_id):
 
     embeddings = create_embeddings(chunks)
 
     ids = [
-        f"{filename}-{i}"
+        f"{document_id}-{i}"
         for i in range(len(chunks))
     ]
 
-    collection.add(
+    metadata = [
+        {
+            "userId": user_id,
+            "conversationId": conversation_id,
+            "documentId": document_id,
+            "filename": filename,
+            "page": page_numbers[i],
+        }
+        for i in range(len(chunks))
+    ]
+
+    collection.upsert(
         ids=ids,
         documents=chunks,
-        embeddings=embeddings
+        embeddings=embeddings,
+        metadatas=metadata,
     )
 
 
-def search_chunks(query):
+def delete_document_chunks(document_id):
+    collection.delete(where={"documentId": document_id})
+
+
+def search_chunks(query, user_id, conversation_id):
+
+    where = {
+        "$and": [
+            {"userId": user_id},
+            {"conversationId": conversation_id},
+        ]
+    }
+    matching_chunks = collection.get(where=where, include=[])["ids"]
+    if not matching_chunks:
+        return []
 
     embedding = create_embeddings(
         [query]
@@ -41,8 +67,20 @@ def search_chunks(query):
         query_embeddings=[
             embedding
         ],
-        n_results=3
+        n_results=min(8, len(matching_chunks)),
+        where=where,
+        include=["documents", "metadatas"],
     )
 
 
-    return result["documents"][0]
+    documents = result["documents"][0] or []
+    metadatas = result["metadatas"][0] or []
+
+    return [
+        {
+            "text": documents[i],
+            "filename": metadatas[i].get("filename"),
+            "page": metadatas[i].get("page"),
+        }
+        for i in range(len(documents))
+    ]

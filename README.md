@@ -6,6 +6,8 @@
 
 Upload a document, ask a question, and let the system retrieve the most relevant information before generating a contextual answer.
 
+Signed-in users can create conversations, upload a PDF to each conversation, and ask questions grounded in that conversation's document. Conversation history is persisted in MongoDB.
+
 <p align="center">
 
 <a href="https://askdocsai.vercel.app">
@@ -185,7 +187,6 @@ AskDocs AI is built as a modular full-stack system.
 * **Tailwind CSS**
 * **React Router**
 * **Axios**
-* **Framer Motion**
 
 ### Backend
 
@@ -207,7 +208,6 @@ AskDocs AI is built as a modular full-stack system.
 * **ChromaDB**
 * **Sentence Transformers**
 * **Google Generative AI**
-* **Groq**
 
 ### Deployment
 
@@ -225,9 +225,11 @@ AskDocs-AI/
 ├── client/                 # React frontend
 │   ├── src/
 │   │   ├── components/
+│   │   ├── context/
 │   │   ├── layouts/
 │   │   ├── pages/
-│   │   └── routes/
+│   │   ├── services/
+│   │   └── utils/
 │   │
 │   └── package.json
 │
@@ -265,6 +267,8 @@ git clone https://github.com/PraneethKandukuriii/AskDocs-AI.git
 cd AskDocs-AI
 ```
 
+Copy each service's `.env.example` to `.env` and fill in the required values. Start MongoDB before starting the API.
+
 ---
 
 ## 2. Start the backend
@@ -285,80 +289,54 @@ http://localhost:5001
 
 ---
 
-## 3. Start the frontend
+## 3. Start the AI service
 
-Open another terminal:
-
-```bash
-cd client
-
-npm install
-
-npm run dev
-```
-
-Vite will provide the local development URL.
-
----
-
-## 4. Start the AI service
+In a separate terminal:
 
 ```bash
 cd ai-service
-
 python -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/uvicorn app.main:app --reload --port 8000
 ```
 
-### macOS / Linux
+On Windows, activate `.venv` and use `pip` and `uvicorn` instead of the `.venv/bin/` commands.
 
+The AI service runs at `http://localhost:8000`.
+
+## 4. Start the frontend
+
+In another terminal:
 ```bash
-source .venv/bin/activate
+cd client
+npm install
+npm run dev
 ```
 
-### Windows
-
-```powershell
-.venv\Scripts\activate
-```
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Start FastAPI:
-
-```bash
-uvicorn app.main:app --reload
-```
-
-The AI service will run on:
-
-```text
-http://localhost:8000
-```
+Vite prints the frontend URL when it starts (normally `http://localhost:5173`).
 
 ---
 
 # 🔐 Environment Variables
 
-Create the required `.env` files for each service.
+Copy the sample environment files for each service. Use the same generated secret for `AI_SERVICE_API_KEY` in the backend and `INTERNAL_API_KEY` in the AI service.
 
 ### Backend
 
 ```env
 PORT=5001
-MONGO_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+MONGO_URI=mongodb://127.0.0.1:27017/askdocs
+JWT_SECRET=replace-with-a-long-random-secret
 AI_SERVICE_URL=http://localhost:8000
+CLIENT_ORIGIN=http://localhost:5173
+AI_SERVICE_API_KEY=replace-with-the-same-long-random-secret
 ```
 
 ### AI Service
 
 ```env
-GOOGLE_API_KEY=your_google_api_key
-GROQ_API_KEY=your_groq_api_key
+GEMINI_API_KEY=your-gemini-api-key
+INTERNAL_API_KEY=replace-with-the-same-long-random-secret
 ```
 
 > Never commit API keys, database credentials, JWT secrets, or other sensitive configuration to Git.
