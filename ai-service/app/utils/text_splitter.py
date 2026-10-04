@@ -3,35 +3,20 @@ def split_text(
     chunk_size=700,
     overlap=100
 ):
-    lines = [line for line in text.split("\n") if line.strip()]
 
-    chunks = []
-    current_lines = []
-    current_len = 0
+    chunks=[]
 
-    for line in lines:
-        line_len = len(line) + 1  # account for the newline we'll rejoin with
+    start=0
 
-        if current_len + line_len > chunk_size and current_lines:
-            chunks.append("\n".join(current_lines))
+    while start < len(text):
 
-            # Carry the trailing lines forward as overlap, so context isn't
-            # lost at chunk boundaries, without cutting any line in half.
-            overlap_lines = []
-            overlap_len = 0
-            for prev_line in reversed(current_lines):
-                overlap_len += len(prev_line) + 1
-                overlap_lines.insert(0, prev_line)
-                if overlap_len >= overlap:
-                    break
+        end = start + chunk_size
 
-            current_lines = overlap_lines
-            current_len = overlap_len
+        chunks.append(
+            text[start:end]
+        )
 
-        current_lines.append(line)
-        current_len += line_len
+        start += chunk_size - overlap
 
-    if current_lines:
-        chunks.append("\n".join(current_lines))
 
     return chunks

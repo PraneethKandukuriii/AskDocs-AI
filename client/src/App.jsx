@@ -1,34 +1,19 @@
-import { Routes, Route } from "react-router-dom";
+import { useState } from 'react'
 
-import Landing from "./pages/Landing";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Chat from "./pages/Chat";
+import './App.css'
 
-import ProtectedRoute from "./components/ProtectedRoute";
-import ChatLayout from "./layouts/ChatLayout";
+import AppRoutes from "./routes/AppRoutes";
+
+
 
 function App() {
-  return (
-    <Routes>
-      {/* Public routes */}
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/signup" element={<Signup />} />
 
-      {/* Protected chat interface */}
-      <Route element={<ProtectedRoute />}>
-        <Route
-          path="/app"
-          element={
-            <ChatLayout>
-              <Chat />
-            </ChatLayout>
-          }
-        />
-      </Route>
-    </Routes>
+  return (
+    <AppRoutes />
   );
+
 }
 
+
 export default App;
+

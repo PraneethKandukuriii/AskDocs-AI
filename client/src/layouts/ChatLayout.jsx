@@ -1,6 +1,6 @@
 import Sidebar from "../components/Sidebar";
 import Navbar from "../components/Navbar";
-import Footer from "../components/landing/Footer";
+import Footer from "../components/Footer";
 
 const ChatLayout = ({ children }) => {
   return (

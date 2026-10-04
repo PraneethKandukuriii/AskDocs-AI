@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.routes import upload, chat
-from app.dependencies import verify_internal_request
 
 
 app = FastAPI(
@@ -13,7 +12,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # replace with your deployed frontend URL in production
+    allow_origins=["*"],  # later replace with your Vercel URL
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -23,16 +22,14 @@ app.add_middleware(
 app.include_router(
     upload.router,
     prefix="/api/upload",
-    tags=["Upload"],
-    dependencies=[Depends(verify_internal_request)],
+    tags=["Upload"]
 )
 
 
 app.include_router(
     chat.router,
     prefix="/api/chat",
-    tags=["Chat"],
-    dependencies=[Depends(verify_internal_request)],
+    tags=["Chat"]
 )
 
 

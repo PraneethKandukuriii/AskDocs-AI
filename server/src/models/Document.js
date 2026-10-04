@@ -8,12 +8,6 @@ const documentSchema = new mongoose.Schema(
       required: true,
     },
 
-    conversation:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Conversation",
-        required:true
-    },
-
     originalName: {
       type: String,
       required: true,
@@ -37,12 +31,6 @@ const documentSchema = new mongoose.Schema(
     mimeType: {
       type: String,
       required: true,
-    },
-
-    processingStatus: {
-      type: String,
-      enum: ["ready", "failed"],
-      default: "ready",
     },
   },
   {

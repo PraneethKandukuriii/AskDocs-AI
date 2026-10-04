@@ -7,13 +7,20 @@ import Footer from "../components/landing/Footer";
 
 const Landing = () => {
   return (
-    <div className="min-h-screen overflow-hidden bg-[#08080d] text-white selection:bg-violet-400/30">
+    <div className="bg-black text-white">
+
       <Navbar />
+
       <Hero />
+
       <Features />
+
       <HowItWorks />
+
       <CTA />
+
       <Footer />
+
     </div>
   );
 };
