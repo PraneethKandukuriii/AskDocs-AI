@@ -12,6 +12,8 @@ router = APIRouter()
 
 class ChatRequest(BaseModel):
     question:str
+    userId: str
+    conversationId: str
 
 
 
@@ -19,12 +21,14 @@ class ChatRequest(BaseModel):
 def chat(
     request:ChatRequest
 ):
-
-    answer = ask_question(
-        request.question
+    result = ask_question(
+        request.question,
+        request.userId,
+        request.conversationId,
     )
 
 
     return {
-        "answer":answer
+        "answer": result["answer"],
+        "sources": result["sources"],
     }
